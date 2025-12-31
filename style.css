@@ -749,14 +749,13 @@ circle {
     height: 100%;
     pointer-events: none;
     z-index: 100;
-
 }
 
 /* =========================================
-   8. MOBILE RESPONSIVENESS (Add to bottom of style.css)
+   8. MOBILE RESPONSIVENESS (Corrected)
    ========================================= */
 
-/* Tablets and Mobile Devices (Width < 768px) */
+/* Tablets and Mobile Devices */
 @media (max-width: 768px) {
 
     /* --- General Text Scaling --- */
@@ -764,46 +763,36 @@ circle {
     .instruction, .drag-instruction { font-size: 0.85rem; }
 
     /* --- Stage 1: Glass Panel --- */
-    /* Make it fit tighter screens */
     .glass-panel { width: 90%; padding: 30px 20px; }
 
     /* --- Stage 2: Drag Cards --- */
-    /* Shrink cards slightly so they are easier to manage on small screens */
     .quote-card { width: 130px; height: 170px; font-size: 1.1rem; }
-    
-    /* Ensure title doesn't overlap cards on short screens */
     .top-text-container { top: 8%; } 
 
-    /* --- Stage 3: Golden Ticket (CRITICAL FIX) --- */
-    /* Your ticket is 460px, which is wider than most phones (390px). This fixes it. */
+    /* --- Stage 3: Golden Ticket --- */
     .ticket-box {
-        width: 90%; /* fluid width */
-        max-width: 360px; /* cap it at a reasonable mobile size */
+        width: 90%; 
+        max-width: 360px;
         padding: 20px 10px;
     }
-    .ticket-title { font-size: 1.4rem; letter-spacing: 1px; }
-    .ticket-quote { font-size: 1.1rem; }
     
-    /* Adjust button size */
-    #claimBtn { padding: 14px 30px; font-size: 1rem; }
-
     /* --- Stage 4: Photos --- */
     .photo-stack { width: 260px; height: 350px; margin-top: 20px; }
 
-    /* --- Stage 5: Book/Letter --- */
-    /* This overrides the desktop transform logic for mobile */
+    /* --- Stage 5: Book/Letter (FIXED) --- */
     .book-container {
-        transform: scale(0.85); /* Default closed size */
+        /* Default closed size on mobile */
+        transform: scale(0.8); 
     }
     
     .book-container.open {
-        /* On mobile, opening the book pushes it off-screen. 
-           This centers it and scales it down to fit. */
-        transform: translateX(15%) scale(0.65); 
+        /* FIX: Changed translateX to 0% so it stays centered */
+        /* The book opens left/right from the center spine */
+        transform: translateX(0%) scale(0.65); 
     }
 }
 
-/* Very Short Screens (iPhone SE / Landscape Mode) */
+/* Very Short Screens */
 @media (max-height: 650px) {
     .stage-title { font-size: 1.2rem; margin-bottom: 5px; }
     .ticket-box { transform: scale(0.85); }
