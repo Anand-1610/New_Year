@@ -1,0 +1,752 @@
+/* =========================================
+   1. GLOBAL RESET & VARIABLES
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-grad: radial-gradient(circle at center, #2b102f 0%, #0f0518 100%);
+    --primary-pink: #ffb7d5;
+    --accent-gold: #fdcb6e;
+}
+
+body {
+    background: var(--bg-grad);
+    color: white;
+    font-family: 'Fredoka', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    user-select: none;
+    overscroll-behavior: none; /* Prevents scroll bounce on mobile */
+}
+
+/* Background Grid Pattern */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+}
+
+/* =========================================
+   2. UTILITY CLASSES
+   ========================================= */
+.stage {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.delay-1 {
+    animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* SHARED SHINE ANIMATION (Used in Stages 1, 2, 3) */
+@keyframes chromiumShine {
+    0% { left: -150%; }
+    50% { left: 150%; }
+    100% { left: 150%; }
+}
+
+
+/* =========================================
+   3. STAGE 1: HEART CARD (Dark Rose-Gold)
+   ========================================= */
+#start-card {
+    z-index: 50;
+}
+
+.glass-panel {
+    border-radius: 30px;
+    padding: 25px 15px;
+    text-align: center;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    position: relative;
+    overflow: hidden;
+
+    /* DARK CALM ROSE-GOLD METALLIC FINISH */
+    background: linear-gradient(135deg, #8e5e68 0%, #5c353e 50%, #291014 100%);
+    border: 2px solid #c4aeb3;
+    
+    /* 3D Bevel Effects (Pink-tinted lighting) */
+    box-shadow:
+        inset 3px 3px 6px rgba(255, 220, 230, 0.3),
+        inset -3px -3px 8px rgba(40, 10, 15, 0.9),
+        0 0 30px rgba(168, 100, 115, 0.4),
+        0 30px 60px rgba(0, 0, 0, 0.9);
+}
+
+/* Shine overlay */
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.5), 
+        rgba(255, 255, 255, 0.1), 
+        transparent
+    );
+    transform: skewX(-30deg);
+    pointer-events: none;
+    animation: chromiumShine 5s infinite linear;
+}
+
+.title {
+    font-size: 1.8rem;
+    color: var(--primary-pink);
+    text-shadow: 0 0 15px rgba(255, 183, 213, 0.5);
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #eecdd5;
+    margin-bottom: 20px;
+}
+
+/* Heart Button */
+.heart-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.heart-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.2);
+}
+
+.heart-container:active .heart-icon {
+    transform: scale(0.9);
+}
+
+/* Progress Ring */
+.progress-ring-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+circle {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.ring-bg {
+    stroke: rgba(255, 255, 255, 0.15);
+}
+
+.ring-fill {
+    stroke: #ff69b4;
+    stroke-dasharray: 340;
+    stroke-dashoffset: 340;
+    filter: drop-shadow(0 0 5px #ff69b4);
+}
+
+.instruction {
+    font-size: 0.9rem;
+    color: #ff9ec6;
+    margin-top: 10px;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+
+/* =========================================
+   4. STAGE 2: DRAG CARDS & GIFT (Metallic)
+   ========================================= */
+#main-stage {
+    z-index: 40;
+    justify-content: center;
+}
+
+.top-text-container {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.stage-title {
+    color: white;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    margin-bottom: 10px;
+}
+
+.drag-instruction {
+    color: #ccc;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+/* Gift Box */
+#gift-layer {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.gift-container {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.gift-container:hover {
+    transform: scale(1.05);
+}
+
+.gift-box {
+    width: 140px;
+    height: 140px;
+    background: #d63031;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.ribbon-vertical {
+    position: absolute;
+    width: 30px;
+    height: 100%;
+    background: var(--accent-gold);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ribbon-horizontal {
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    background: var(--accent-gold);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.lid {
+    position: absolute;
+    width: 160px;
+    height: 40px;
+    background: #e17055;
+    top: -40px;
+    left: -10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.instruction-gift {
+    color: #fff;
+    margin-top: 20px;
+    font-size: 1rem;
+    opacity: 0;
+    transition: opacity 0.5s;
+    white-space: nowrap;
+}
+
+.instruction-gift.show {
+    opacity: 1;
+}
+
+/* Card Layer */
+#card-layer {
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    z-index: 10;
+    display: flex; 
+    justify-content: center; /* Centers the pile horizontally */
+    align-items: center;     /* Centers the pile vertically */
+}
+
+/* METALLIC CARDS */
+.quote-card {
+    position: absolute;
+    width: 160px;
+    height: 200px;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3436;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+    cursor: grab;
+    touch-action: none;
+    position: relative;
+    overflow: hidden;
+    
+    /* Metallic Rim */
+    border: 2px solid rgba(255,255,255,0.3);
+
+    /* 3D Metallic Beveling */
+    box-shadow:
+        inset 2px 2px 5px rgba(255, 255, 255, 0.5), 
+        inset -2px -2px 8px rgba(0, 0, 0, 0.5),    
+        0 10px 25px rgba(0,0,0,0.4);               
+}
+
+/* Shine Animation for Cards */
+.quote-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        rgba(255, 255, 255, 0.7), 
+        rgba(255, 255, 255, 0.2), 
+        transparent
+    );
+    transform: skewX(-30deg);
+    pointer-events: none;
+    animation: chromiumShine 4s infinite linear;
+}
+
+/* Metallic Gradients for specific colors */
+.card-orange { background: linear-gradient(135deg, #ffd1c4 0%, #fab1a0 50%, #c78a7a 100%); }
+.card-cyan   { background: linear-gradient(135deg, #b2ffff 0%, #81ecec 50%, #5a9e9e 100%); }
+.card-purple { background: linear-gradient(135deg, #cac4ff 0%, #a29bfe 50%, #726bbf 100%); }
+.card-yellow { background: linear-gradient(135deg, #fff7d1 0%, #ffeaa7 50%, #bfae7a 100%); }
+.card-red    { background: linear-gradient(135deg, #ff9e9d 0%, #ff7675 50%, #b35251 100%); }
+
+.quote-card:active {
+    cursor: grabbing;
+    scale: 1.05;
+    transition: scale 0.1s;
+}
+
+.quote-card.thrown {
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s;
+    opacity: 0;
+}
+
+
+/* =========================================
+   5. STAGE 3: TICKET (Chromium Gold)
+   ========================================= */
+#ticket-stage {
+    z-index: 30;
+    gap: 30px;
+}
+
+.ticket-box {
+    width: 400px;
+    max-width: 90vw;
+    padding: 15px 5px;
+    border-radius: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    /* Dark Metallic Gold Gradient */
+    background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+    
+    /* Gold Glow Border */
+    border: 3px solid #fdcb6e;
+
+    /* 3D Depth */
+    box-shadow: 
+        inset 0 0 40px rgba(253, 203, 110, 0.1),
+        inset 2px 2px 5px rgba(255, 255, 255, 0.15),
+        inset -2px -2px 5px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(253, 203, 110, 0.4),
+        0 20px 50px rgba(0, 0, 0, 0.7);
+
+    mask-image: 
+        radial-gradient(circle at left center, transparent 15px, black 15px), 
+        radial-gradient(circle at right center, transparent 15px, black 15px);
+    -webkit-mask-image: 
+        radial-gradient(circle at left center, transparent 15px, black 15px), 
+        radial-gradient(circle at right center, transparent 15px, black 15px);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+}
+
+/* Shine Animation */
+.ticket-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.05), 
+        rgba(253, 203, 110, 0.2), 
+        rgba(255, 255, 255, 0.05), 
+        transparent
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    animation: chromiumShine 4s infinite linear;
+}
+
+.ticket-stub-icon {
+    color: #ffeaa7;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(253, 203, 110, 0.5);
+}
+
+.ticket-title {
+    color: #ffeaa7;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.ticket-divider {
+    height: 2px;
+    background: repeating-linear-gradient(to right, #fdcb6e 0, #fdcb6e 5px, transparent 5px, transparent 10px);
+    margin: 10px auto;
+    width: 90%;
+    opacity: 0.6;
+    box-shadow: 0 0 5px #fdcb6e;
+}
+
+.ticket-sub {
+    color: #b2bec3;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.ticket-quote {
+    color: white;
+    font-size: 1.3rem;
+    font-style: italic;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.ticket-fineprint {
+    color: #b2bec3;
+    font-size: 0.7rem;
+}
+
+/* Premium Gold Button */
+#claimBtn {
+    background-image: linear-gradient(to bottom, #f7df7c, #cfa630 50%, #b38b1c 51%, #d4b859);
+    border: none;
+    color: #3d2600;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Fredoka', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    overflow: hidden;
+    
+    box-shadow: 
+        inset 0 1px 0 rgba(255,255,255,0.5), 
+        inset 0 -2px 0 rgba(0,0,0,0.2), 
+        0 5px 15px rgba(0,0,0,0.3), 
+        0 0 25px rgba(253, 203, 110, 0.6);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+#claimBtn:hover {
+    transform: translateY(-3px);
+    background-image: linear-gradient(to bottom, #ffe68a, #e0be4e 50%, #cba334 51%, #eadd8e);
+    box-shadow: 
+        inset 0 1px 0 rgba(255,255,255,0.6), 
+        inset 0 -2px 0 rgba(0,0,0,0.1), 
+        0 8px 20px rgba(0,0,0,0.4), 
+        0 0 40px rgba(253, 203, 110, 0.9);
+    color: #291900;
+}
+
+#claimBtn:active {
+    transform: translateY(1px);
+    box-shadow: 
+        inset 0 2px 5px rgba(0,0,0,0.3), 
+        0 2px 5px rgba(0,0,0,0.3), 
+        0 0 15px rgba(253, 203, 110, 0.4);
+}
+
+
+/* =========================================
+   6. STAGE 4: PHOTOS
+   ========================================= */
+#photo-stage {
+    z-index: 20;
+}
+
+.photo-stack {
+    position: relative;
+    width: 280px;
+    height: 380px;
+    margin: 30px auto;
+}
+
+.photo-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    padding: 15px 15px 50px 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 5px;
+    transform: rotate(var(--r));
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+.photo-card.viewed {
+    transform: translate(-150%, 20%) rotate(-30deg) !important;
+    opacity: 0;
+}
+
+
+/* =========================================
+   7. STAGE 5: FINAL LETTER (BOOK)
+   ========================================= */
+#letter-stage {
+    z-index: 10;
+    perspective: 1500px;
+}
+
+.sub-instruction {
+    color: #ccc;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.book-container {
+    position: relative;
+    width: 300px;
+    height: 420px;
+    cursor: pointer;
+    transition: transform 0.8s;
+}
+
+@media (max-width: 650px) {
+    .book-container {
+        transform: scale(0.85);
+    }
+    .book-container.open {
+        transform: translateX(50%) scale(0.65);
+    }
+}
+
+@media (min-width: 651px) {
+    .book-container.open {
+        transform: translateX(150px);
+    }
+}
+
+/* Right Page */
+.right-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff9ea;
+    border: 1px solid #ddd;
+    border-radius: 5px 15px 15px 5px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    z-index: 1;
+}
+
+.inside-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #555;
+}
+
+.inside-content p {
+    margin-bottom: 15px;
+}
+
+.side-accent {
+    position: absolute;
+    right: 15px;
+    top: 10%;
+    height: 80%;
+    width: 3px;
+    background: #a29bfe;
+    border-radius: 2px;
+    opacity: 0.5;
+}
+
+/* Cover */
+.cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: left;
+    transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+    z-index: 2;
+}
+
+.cover.is-open {
+    transform: rotateY(-180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 5px 15px 15px 5px;
+    overflow: hidden;
+    box-shadow: 2px 5px 15px rgba(0,0,0,0.15);
+}
+
+/* Front Cover */
+.front-face {
+    background: #fdf7e9;
+    border: 8px solid #a29bfe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.front-decor {
+    width: 80%;
+    height: auto;
+}
+
+.front-title {
+    font-size: 32px;
+    fill: #5c4b43;
+    font-weight: 600;
+}
+
+.front-year {
+    font-size: 64px;
+    fill: #d65a31;
+    font-weight: bold;
+}
+
+/* Back Cover */
+.back-face {
+    background: white;
+    transform: rotateY(180deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.left-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Confetti */
+#confetti {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
