@@ -752,7 +752,7 @@ circle {
 }
 
 /* =========================================
-   8. MOBILE RESPONSIVENESS (Corrected)
+   8. MOBILE RESPONSIVENESS (Alignment Fixed)
    ========================================= */
 
 /* Tablets and Mobile Devices */
@@ -766,8 +766,10 @@ circle {
     .glass-panel { width: 90%; padding: 30px 20px; }
 
     /* --- Stage 2: Drag Cards --- */
-    .quote-card { width: 130px; height: 170px; font-size: 1.1rem; }
+    /* Ensure title doesn't overlap cards */
     .top-text-container { top: 8%; } 
+    /* Slightly smaller cards for mobile */
+    .quote-card { width: 130px; height: 170px; font-size: 1.1rem; }
 
     /* --- Stage 3: Golden Ticket --- */
     .ticket-box {
@@ -775,24 +777,27 @@ circle {
         max-width: 360px;
         padding: 20px 10px;
     }
-    
+    /* Adjust button size */
+    #claimBtn { padding: 14px 30px; font-size: 1rem; }
+
     /* --- Stage 4: Photos --- */
     .photo-stack { width: 260px; height: 350px; margin-top: 20px; }
 
-    /* --- Stage 5: Book/Letter (FIXED) --- */
+    /* --- Stage 5: Book/Letter (CENTERING FIX) --- */
     .book-container {
         /* Default closed size on mobile */
         transform: scale(0.8); 
     }
     
     .book-container.open {
-        /* FIX: Changed translateX to 0% so it stays centered */
-        /* The book opens left/right from the center spine */
-        transform: translateX(0%) scale(0.65); 
+        /* FIX: 30% moves it ~90px Right.
+           This perfectly compensates for the scale(0.6) 
+           and places the spine exactly in the center of the screen. */
+        transform: translateX(30%) scale(0.6); 
     }
 }
 
-/* Very Short Screens */
+/* Very Short Screens (e.g., Landscape Mode) */
 @media (max-height: 650px) {
     .stage-title { font-size: 1.2rem; margin-bottom: 5px; }
     .ticket-box { transform: scale(0.85); }
